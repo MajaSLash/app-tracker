@@ -8,30 +8,49 @@ async function updateStats() {
     `;
 }
 
-async function updateTime() {
-  const response = await fetch('/api/time');
-  const time = await response.json();
+//Time Functions
+let startTime = performance.now();
+let lastAppTime = performance.now();
+let breakSecs = 216000; // 1 Hour; Adjust as needed
+
+function formatTime(seconds) {
+  const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
+  const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+  const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+  return `${hrs}:${mins}:${secs}`;
+}
+
+function updateTime() {
+  const sessionTime = (performance.now() - startTime) / 1000;
+  const lastAppCounter = (performance.now() - lastAppTime) / 1000;
+  const breakTime = (sessionTime > 1 && sessionTime.toFixed(0) % breakSecs == 0) ? true : false;
   document.getElementById('time').innerHTML = `
-    <p>Session Time: ${time.sessionTime} </p>
-    <p>Time Since Last Application: ${time.lastAppCounter} </p>
+    <p>Session Time: ${formatTime(sessionTime)} </p>
+    <p>Time Since Last Application: ${formatTime(lastAppCounter)} </p>
   `;
-  if (time.breakTime) {
-    alert(time.message);
+  if (breakTime) {
+    alert("Take a break!");
   }
 }
+
 
 //Sound References
 const quickApplySound = new Audio('sounds/taco_bell.mp3');
 const webApplySound = new Audio('sounds/dj_khalid.mp3');
 
+//Event Listeners
 document.getElementById('quickApply').addEventListener('click', async () => {
-  await fetch('/api/quick-apply');
+  const response = await fetch('/api/quick-apply');
+  const quickStats = await response.json();
+  lastAppTime = quickStats.lastAppTime;
   quickApplySound.play();
   updateStats();
 });
 
 document.getElementById('webApply').addEventListener('click', async () => {
-  await fetch('/api/web-apply');
+  const response = await fetch('/api/web-apply');
+  const webStats = await response.json();
+  lastAppTime = webStats.lastAppTime;
   webApplySound.play();
   updateStats();
 });
