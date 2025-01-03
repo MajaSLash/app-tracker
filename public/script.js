@@ -2,7 +2,6 @@ async function updateStats() {
     const response = await fetch('/api/stats');
     const stats = await response.json();
     document.getElementById('stats').innerHTML = `
-      <p>Time Since Last Application: ${stats.elapsed} </p>
       <p>Quick Apply Applications: ${stats.quickAppCounter} (${stats.quickAppGoal}% to goal)</p>
       <p>Web Apply Applications: ${stats.webAppCounter} (${stats.webAppGoal}% to goal)</p>
       <p>Total Applications: ${stats.totalApplications}</p>
@@ -14,7 +13,11 @@ async function updateTime() {
   const time = await response.json();
   document.getElementById('time').innerHTML = `
     <p>Session Time: ${time.sessionTime} </p>
+    <p>Time Since Last Application: ${time.lastAppCounter} </p>
   `;
+  if (time.breakTime) {
+    alert(time.message);
+  }
 }
 
 //Sound References

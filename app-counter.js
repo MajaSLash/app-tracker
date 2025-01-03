@@ -8,29 +8,24 @@ const port = 3000;
 
 // Application state
 let startTime = performance.now();
-let prevTime = performance.now();
+let lastAppTime = performance.now();
 let quickAppCounter = 0;
 let webAppCounter = 0;
-let breakSecs = 3600; // Adjust Break time in seconds
-let elapsed = 0;
+let breakSecs = 216000; // 1 Hour; Adjust as needed
 
 
 
 // Helper functions
 function quickAppComplete() {
-  const currentTime = performance.now();
-  elapsed = ((currentTime - prevTime) / 1000).toFixed(2);
   quickAppCounter++;
-  prevTime = currentTime;
-  return { message: "Quick Application Complete!", elapsed, quickAppCounter };
+  lastAppTime = performance.now();
+  return { message: "Quick Application Complete!", lastAppTime, quickAppCounter };
 }
 
 function webAppComplete() {
-  const currentTime = performance.now();
-  elapsed = ((currentTime - prevTime) / 1000).toFixed(2);
   webAppCounter++;
-  prevTime = currentTime;
-  return { message: "Website Application Complete!", elapsed, webAppCounter };
+  lastAppTime = performance.now();
+  return { message: "Website Application Complete!", lastAppTime, webAppCounter };
 }
 
 function formatTime(seconds) {
@@ -42,7 +37,6 @@ function formatTime(seconds) {
 
 function getSessionStats() {
   return {
-    elapsed: formatTime(elapsed),
     quickAppCounter,
     quickAppGoal: ((quickAppCounter / 40) * 100).toFixed(2),
     webAppCounter,
@@ -53,9 +47,11 @@ function getSessionStats() {
 
 function getSessionTime() {
   const sessionTime = (performance.now() - startTime) / 1000;
-  const breakTime = (sessionTime > 0 && sessionTime % breakSecs == 0) ? true : false;
+  const lastAppCounter = (performance.now() - lastAppTime) / 1000;
+  const breakTime = (sessionTime > 0 && sessionTime.toFixed(0) % breakSecs == 0) ? true : false;
   return {
     sessionTime: formatTime(sessionTime),
+    lastAppCounter: formatTime(lastAppCounter),
     breakTime
   };
 }
@@ -79,8 +75,8 @@ app.get('/api/stats', (req, res) => {
 
 app.get('/api/time', (req, res) => {
   const time = getSessionTime();
-  if (time.breakTime) {time.message = "Take a break!"; };
-  res.json(getSessionTime());
+  time.message = "Take a break!";
+  res.json(time);
 });
 
 app.get('/api/end-session', (req, res) => {
