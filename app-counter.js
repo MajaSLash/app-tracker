@@ -11,7 +11,7 @@ let startTime = performance.now();
 let prevTime = performance.now();
 let quickAppCounter = 0;
 let webAppCounter = 0;
-let breakMins = 60 * 1000; // in milliseconds
+let breakSecs = 3600; // Adjust Break time in seconds
 let elapsed = 0;
 
 
@@ -53,8 +53,10 @@ function getSessionStats() {
 
 function getSessionTime() {
   const sessionTime = (performance.now() - startTime) / 1000;
+  const breakTime = (sessionTime > 0 && sessionTime % breakSecs == 0) ? true : false;
   return {
     sessionTime: formatTime(sessionTime),
+    breakTime
   };
 }
 
@@ -76,6 +78,8 @@ app.get('/api/stats', (req, res) => {
 });
 
 app.get('/api/time', (req, res) => {
+  const time = getSessionTime();
+  if (time.breakTime) {time.message = "Take a break!"; };
   res.json(getSessionTime());
 });
 
