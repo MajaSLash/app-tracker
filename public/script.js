@@ -22,10 +22,10 @@ function formatTime(seconds) {
 
 function updateTime(reset) {
   const sessionTime = (performance.now() - startTime) / 1000;
-  console.log(sessionTime);
+  //console.log(sessionTime);
   if(reset == true) lastAppTime = performance.now();
   lastAppDiff = (performance.now() - lastAppTime) / 1000;
-  console.log(lastAppDiff);
+  //console.log(lastAppDiff);
   const breakTime = (sessionTime > 1 && sessionTime.toFixed(0) % breakSecs == 0) ? true : false;
   document.getElementById('time').innerHTML = `
     <p>Session Time: ${formatTime(sessionTime)} </p>
