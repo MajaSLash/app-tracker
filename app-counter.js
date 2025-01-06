@@ -11,18 +11,15 @@ let quickAppCounter = 0;
 let webAppCounter = 0;
 
 
-
 // Helper functions
 function quickAppComplete() {
   quickAppCounter++;
-  const lastAppTime = performance.now();
-  return { message: "Quick Application Complete!", lastAppTime, quickAppCounter };
+  return { message: "Quick Application Complete!", quickAppCounter };
 }
 
 function webAppComplete() {
   webAppCounter++;
-  const lastAppTime = performance.now();
-  return { message: "Website Application Complete!", lastAppTime, webAppCounter };
+  return { message: "Website Application Complete!", webAppCounter };
 }
 
 function getSessionStats() {
