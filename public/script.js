@@ -11,7 +11,6 @@ async function updateStats() {
 //Time Functions
 const startTime = performance.now();
 let lastAppTime = performance.now();
-let lastAppDiff = 0;
 let breakSecs = 216000; // 1 Hour; Adjust as needed
 
 function formatTime(seconds) {
@@ -23,10 +22,11 @@ function formatTime(seconds) {
 
 function updateTime() {
   const sessionTime = (performance.now() - startTime) / 1000;
+  lastAppTime = (performance.now() - lastAppTime) / 1000;
   const breakTime = (sessionTime > 1 && sessionTime.toFixed(0) % breakSecs == 0) ? true : false;
   document.getElementById('time').innerHTML = `
     <p>Session Time: ${formatTime(sessionTime)} </p>
-    <p>Time Since Last Application: ${formatTime(lastAppDiff)} </p>
+    <p>Time Since Last Application: ${formatTime(lastAppTime)} </p>
   `;
   if (breakTime) {
     alert("Take a break!");
@@ -41,7 +41,6 @@ const webApplySound = new Audio('sounds/dj_khalid.mp3');
 //Event Listeners
 document.getElementById('quickApply').addEventListener('click', async () => {
   await fetch('/api/quick-apply');
-  lastAppDiff = (performance.now() - lastAppTime) / 1000;
   lastAppTime = performance.now();
   quickApplySound.play();
   updateTime();
@@ -50,7 +49,6 @@ document.getElementById('quickApply').addEventListener('click', async () => {
 
 document.getElementById('webApply').addEventListener('click', async () => {
   await fetch('/api/web-apply');
-  lastAppDiff = (performance.now() - lastAppTime) / 1000;
   lastAppTime = performance.now();
   webApplySound.play();
   updateTime();
