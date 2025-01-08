@@ -11,7 +11,7 @@ async function updateStats() {
 //Time Functions
 const startTime = performance.now();
 let lastAppTime = startTime;
-let breakSecs = 216000; // 1 Hour; Adjust as needed
+let breakSecs = 3600; // 1 Hour; Adjust as needed
 
 function formatTime(seconds) {
   const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -31,7 +31,7 @@ function updateTime(reset) {
     <p>Session Time: ${formatTime(sessionTime)} </p>
     <p>Time Since Last Application: ${formatTime(lastAppDiff)} </p>
   `;
-  if (breakTime) {
+  if (breakTime == true) {
     alert("Take a break!");
   }
   return lastAppTime;
